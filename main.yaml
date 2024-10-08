@@ -7,3 +7,6 @@
     roles:
       - story_install
       - geth_install
+      - node_initialize
+      - node_configure
+      - node_launch

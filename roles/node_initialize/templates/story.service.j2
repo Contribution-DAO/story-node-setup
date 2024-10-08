@@ -1,0 +1,22 @@
+[Unit]
+Description=Story node service
+After=network.target story-geth.service
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User={{ ansible_user }}
+Group={{ ansible_group }}
+WorkingDirectory={{ user_dir }}
+ExecStart=story run
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=node-story
+StartLimitInterval=0
+LimitNOFILE=65536
+LimitNPROC=65536
+
+[Install]
+WantedBy=multi-user.target
+

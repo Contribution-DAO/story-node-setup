@@ -1,0 +1,35 @@
+---
+- name: Ensure that the folder does not exits
+  file:
+    path: "{{ user_dir }}/.story"
+    state: absent
+
+- name: Initialize Story Node
+  command: "story init --network {{ chain_id }}"
+  environment:
+    PATH: "{{ path }}"
+
+- name: Update Story seeds in config.toml file
+  lineinfile:
+    path: "{{ user_dir }}/.story/story/config/config.toml"
+    regexp: "^seeds ="
+    line: 'seeds = "{{ seeds }}"'
+    state: present
+
+- name: Copy Geth service file
+  become: true
+  template:
+    src: "geth.service.j2"
+    dest: "/etc/systemd/system/story-geth.service"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Copy Story service file
+  become: true
+  template:
+    src: "story.service.j2"
+    dest: "/etc/systemd/system/story.service"
+    owner: root
+    group: root
+    mode: "0644"

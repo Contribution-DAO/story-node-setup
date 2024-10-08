@@ -1,0 +1,21 @@
+[Unit]
+Description=Story geth service
+After=network.target
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User={{ ansible_user }}
+Group={{ ansible_group }}
+WorkingDirectory={{ user_dir }}
+ExecStart=geth --iliad  --syncmode full
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=node-geth
+StartLimitInterval=0
+LimitNOFILE=65536
+LimitNPROC=65536
+
+[Install]
+WantedBy=multi-user.target

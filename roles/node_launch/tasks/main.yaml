@@ -1,0 +1,17 @@
+---
+- name: Start Geth service
+  become: true
+  systemd:
+    name: "story-geth"
+    state: restarted
+    daemon_reload: yes
+    enabled: yes
+
+- name: Start Story service
+  become: true
+  systemd:
+    name: "story"
+    state: restarted
+    daemon_reload: yes
+    enabled: yes
+

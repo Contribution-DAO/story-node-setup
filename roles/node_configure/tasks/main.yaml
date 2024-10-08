@@ -1,0 +1,27 @@
+---
+- name: register public ip
+  uri:
+    url: "https://api.ipify.org?format=json"
+  register: public_ip
+
+- name: Setup external address
+  lineinfile:
+    path: "{{ user_dir }}/.story/story/config/config.toml"
+    regexp: 'external_address = "'
+    line: 'external_address = "{{ public_ip.json.ip }}:{{ custom_port_prefix }}56"'
+    state: present
+
+- name: Adjust config.toml port
+  lineinfile:
+    path: "{{ user_dir }}/.story/story/config/config.toml"
+    regexp: "{{ item.key }}"
+    line: "{{ item.value }}"
+  loop:
+    - {
+        key: 'laddr = "tcp://0.0.0.0:26656"',
+        value: 'laddr = "tcp://0.0.0.0:{{ custom_port_prefix }}56"',
+      }
+    - {
+        key: 'laddr = "tcp://127.0.0.1:26657"',
+        value: 'laddr = "tcp://0.0.0.0:{{ custom_port_prefix }}57"',
+      }
