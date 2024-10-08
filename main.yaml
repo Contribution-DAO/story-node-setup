@@ -1,0 +1,8 @@
+---
+  - name: Main
+    hosts: "story-nodes"
+    gather_facts: false
+    vars_files:
+      - vars/story.yaml
+    roles:
+      - story_install
