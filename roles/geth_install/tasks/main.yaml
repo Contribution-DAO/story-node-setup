@@ -1,0 +1,24 @@
+---
+- name: Insatll from source
+  become: false
+  block:
+    - name: Clone geth repo
+      git:
+        repo: "https://github.com/piplabs/story-geth"
+        dest: "{{ user_dir }}/story-geth"
+        version: "{{ geth_version }}"
+        update: yes
+        force: yes
+        recursive: no
+
+    - name: Install Geth
+      command: "{{ item }}"
+      args:
+        chdir: "{{ user_dir }}/story-geth"
+      with_items:
+        - "make geth"
+        - "mv build/bin/geth /usr/local/bin/geth"
+      environment:
+        PATH: "{{ path }}"
+        GOPATH: "{{ user_dir }}/go"
+
