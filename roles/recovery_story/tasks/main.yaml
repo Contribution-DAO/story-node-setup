@@ -1,0 +1,44 @@
+---
+- name: Download snapshot
+  become: true
+  shell: "wget --progress=dot:giga -O {{ user_dir }}/story_lasted_snapshot.tar.lz4 {{ story_snapshot_url }}"
+  args:
+    chdir: "{{ user_dir }}"
+
+- name: Stop Geth service
+  systemd:
+    name: "story"
+    state: stopped
+
+- name: Backup state
+  copy:
+    src: "{{ user_dir }}/.story/story/data/priv_validator_state.json"
+    dest: "{{ user_dir }}/.story/story/priv_validator_state.json.backup"
+    remote_src: true
+    mode: "0644"
+
+- name: Remove Story data
+  file:
+    path: "{{ user_dir }}/.story/story/data/"
+    state: absent
+
+- name: Extract snapshot
+  shell: "lz4 -c -d story_lasted_snapshot.tar.lz4 | tar -x -C {{ user_dir }}/.story/story/"
+  args:
+    chdir: "{{ user_dir }}"
+
+- name: Restored state
+  copy:
+    src: "{{ user_dir }}/.story/story/priv_validator_state.json.back"
+    dest: "{{ user_dir }}/.story/story/data/priv_validator_state.json"
+    mode: "0644"
+
+- name: Start Story service
+  systemd:
+    name: "story"
+    state: restarted
+
+- name: Delete snapshot
+  file:
+    path: "{{ user_dir }}/story_lasted_snapshot.tar.lz4"
+    state: absent

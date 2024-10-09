@@ -1,0 +1,31 @@
+---
+- name: Download snapshot
+  become: true
+  shell: "wget --progress=dot:giga -O {{ user_dir }}/geth_lasted_snapshot.tar.lz4 {{ geth_snapshot_url }}"
+  args:
+    chdir: "{{ user_dir }}"
+
+- name: Stop Geth service
+  systemd:
+    name: "story-geth"
+    state: stopped
+
+- name: Remove geth data
+  file:
+    path: "{{ user_dir }}/.story/geth/{{ chain_id }}/geth/chaindata"
+    state: absent
+
+- name: Extract snapshot
+  shell: "lz4 -c -d geth_lasted_snapshot.tar.lz4 | tar -x -C {{ user_dir }}/.story/geth/{{ chain_id }}/geth/"
+  args:
+    chdir: "{{ user_dir }}"
+
+- name: Start Geth service
+  systemd:
+    name: "story-geth"
+    state: restarted
+
+- name: Delete snapshot
+  file:
+    path: "{{ user_dir }}/geth_lasted_snapshot.tar.lz4"
+    state: absent
