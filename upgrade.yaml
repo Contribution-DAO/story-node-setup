@@ -6,3 +6,4 @@
     - vars/story.yaml
   roles:
     - upgrade_geth
+    - upgrade_story

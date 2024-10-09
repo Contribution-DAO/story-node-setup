@@ -1,0 +1,38 @@
+---
+- name: Clone story repo
+  git:
+    repo: "https://github.com/piplabs/story"
+    dest: "{{ user_dir }}/story"
+    version: "{{ story_version }}"
+    update: yes
+    force: yes
+    recursive: no
+
+- name: Install Story
+  shell: "go build -o story ./client"
+  args:
+    chdir: "{{ user_dir }}/story"
+  environment:
+    PATH: "{{ path }}"
+    GOPATH: "{{ user_dir }}/go"
+
+- name: Stop service
+  become: false
+  systemd:
+    name: "story"
+    state: stopped
+
+- name: Copy binary
+  copy:
+    src: "{{ user_dir }}/story/story"
+    dest: "/usr/local/bin/story"
+    remote_src: true
+    mode: "0755"
+
+- name: Restart service
+  become: true
+  systemd:
+    name: "story"
+    state: restarted
+    daemon_reload: true
+    enabled: true
