@@ -1,0 +1,38 @@
+---
+- name: Clone Geth repo
+  git:
+    repo: "https://github.com/piplabs/story-geth"
+    dest: "{{ user_dir }}/story-geth"
+    version: "{{ geth_version }}"
+    update: yes
+    force: yes
+    recursive: no
+
+- name: Install Geth
+  shell: "make geth"
+  args:
+    chdir: "{{ user_dir }}/story-geth"
+  environment:
+    PATH: "{{ path }}"
+    GOPATH: "{{ user_dir }}/go"
+
+- name: Stop Geth service
+  become: true
+  systemd:
+    name: "story-geth"
+    state: stopped
+
+- name: Copy the binary
+  copy:
+    src: "{{ user_dir }}/story-geth/build/bin/geth"
+    dest: "/usr/local/bin/geth"
+    remote_src: true
+    mode: "0755"
+
+- name: Start Geth service
+  become: true
+  systemd:
+    name: "story-geth"
+    state: restarted
+    daemon_reload: yes
+    enabled: yes
