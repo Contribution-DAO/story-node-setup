@@ -13,11 +13,12 @@
 
     - name: Insatll Story
       command: "{{ item }}"
+      become: true
       args:
         chdir: "{{ user_dir }}/story"
       with_items:
         - "go build -o story ./client"
-        - "mv story /usr/local/bin/story"
+        - "cp story /usr/local/bin/story"
       environment:
         PATH: "{{ path }}"
         GOPATH: "{{ user_dir }}/go"
