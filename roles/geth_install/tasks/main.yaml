@@ -13,11 +13,12 @@
 
     - name: Install Geth
       command: "{{ item }}"
+      become: true
       args:
         chdir: "{{ user_dir }}/story-geth"
       with_items:
         - "make geth"
-        - "mv build/bin/geth /usr/local/bin/geth"
+        - "cp build/bin/geth /usr/local/bin/geth"
       environment:
         PATH: "{{ path }}"
         GOPATH: "{{ user_dir }}/go"
