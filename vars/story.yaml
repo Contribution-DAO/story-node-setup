@@ -1,7 +1,7 @@
-story_version: v0.10.1
-geth_version: v0.9.4
+story_version: v0.12.0
+geth_version: v0.10.0
 
-chain_id: iliad
+chain_id: odyssey
 
 custom_port_prefix: 167
-seeds: "5a0191a6bd8f17c9d2fa52386ff409f5d796d112@b1.testnet.storyrpc.io:26656,0e2f0d4b5204e5e92a994a1eaa745b9ccb1d747b@b2.testnet.storyrpc.io:26656"
+seeds: "75ac7b193e93e928d6c83c273397517cb60603c0@b1.odyssey-testnet.storyrpc.io:26656,6adbd1e974d6bb1c353aabbc7abef72c81e536f5@b2.odyssey-testnet.storyrpc.io:26656"
